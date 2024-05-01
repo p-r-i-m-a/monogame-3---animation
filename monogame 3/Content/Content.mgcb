@@ -25,6 +25,12 @@
 /processorParam:TextureFormat=Color
 /build:endscreen.png
 
+#begin Life could be a dream.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Life could be a dream.mp3
+
 #begin spriteFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

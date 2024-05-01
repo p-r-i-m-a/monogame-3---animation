@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace monogame_3
@@ -13,9 +15,11 @@ namespace monogame_3
         Vector2 tribbleGspeed, tribbleOspeed, tribbleBspeed, tribbleCspeed;
         Texture2D tribbleGtexture, tribbleOtexture, tribbleCtexture, tribbleBtexture, tribbleIntroTexture, endTexture;
         Rectangle tribbleGrect, tribbleOrect, tribbleCrect, tribbleBrect;
-        MouseState mouseState;
+        MouseState mouseState, prevMouseState;
         public int clicks;
         SpriteFont fontText;
+        Song screenTunes;
+        float seconds;
 
         enum Screen
         {
@@ -36,12 +40,11 @@ namespace monogame_3
         protected override void Initialize()
         {
 
-
+            seconds = 0f;
             Random generator = new Random();
             screen = Screen.Intro;
             endTexture = Content.Load<Texture2D>("endscreen");
             tribbleIntroTexture = Content.Load<Texture2D>("tribble_intro");
-            fontText = Content.Load<SpriteFont>("sriteFont");
             
             int x, y;
             _graphics.PreferredBackBufferWidth = 800;
@@ -68,13 +71,15 @@ namespace monogame_3
 
 
             base.Initialize();
+            MediaPlayer.Play(screenTunes);
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            fontText = Content.Load<SpriteFont>("spriteFont");
+            screenTunes = Content.Load<Song>("Life could be a dream");
 
-            
             tribbleGtexture = Content.Load<Texture2D>("tribbleGrey");
             tribbleBtexture = Content.Load<Texture2D>("tribbleBrown");
             tribbleCtexture = Content.Load<Texture2D>("tribbleCream");
@@ -91,21 +96,28 @@ namespace monogame_3
 
         protected override void Update(GameTime gameTime)
         {
+            //seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            prevMouseState = mouseState;
             mouseState = Mouse.GetState();
 
-            timeSinceLastClick += gameTime.ElapsedGameTime.Milliseconds;
+            //timeSinceLastClick += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (mouseState.LeftButton == ButtonState.Pressed && timeSinceLastClick >= clickCooldown)
-            {
-                clicks += 1;
-                timeSinceLastClick = 0;
-            }
+            
 
             if (screen == Screen.Intro)
             {
+                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                {
+                    screen = Screen.TribbleYard;
+                    MediaPlayer.Stop();
+                }
+                
+
                 if (mouseState.LeftButton == ButtonState.Pressed)
                 {
                     screen = Screen.TribbleYard;
@@ -113,7 +125,9 @@ namespace monogame_3
             }
             else if (screen == Screen.TribbleYard)
             {
-                if (tribbleGrect.Right > _graphics.PreferredBackBufferWidth || tribbleGrect.Left < 0)
+                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    screen = Screen.end;
+                    if (tribbleGrect.Right > _graphics.PreferredBackBufferWidth || tribbleGrect.Left < 0)
                 {
                     color = 2;
                     tribbleGspeed.X *= -1;
@@ -179,6 +193,8 @@ namespace monogame_3
             if (screen == Screen.Intro)
             {
                 _spriteBatch.Draw(tribbleIntroTexture, new Rectangle(0, 0, 800, 500), Color.White);
+                _spriteBatch.DrawString(fontText, "Click To Continue!", new Vector2(270, 200), Color.Black);
+
             }
             else if (screen == Screen.TribbleYard)
             {
