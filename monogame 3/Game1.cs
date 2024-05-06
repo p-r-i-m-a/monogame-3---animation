@@ -21,6 +21,8 @@ namespace monogame_3
         Song screenTunes;
         float seconds;
 
+        trobble tribble1;
+
         enum Screen
         {
             Intro,
@@ -72,6 +74,8 @@ namespace monogame_3
 
             base.Initialize();
             MediaPlayer.Play(screenTunes);
+            tribble1 = new trobble(tribbleGtexture, new Rectangle(10, 10, 100, 100), new Vector2(2, 2));
+
         }
 
         protected override void LoadContent()
@@ -134,12 +138,13 @@ namespace monogame_3
                 }
                 tribbleGrect.X += (int)tribbleGspeed.X;
 
-                if (tribbleGrect.Bottom > _graphics.PreferredBackBufferHeight || tribbleGrect.Top < 0)
-                {
-                    tribbleGspeed.Y *= -1;
-                    color = 1;
-                }
-                tribbleGrect.Y += (int)tribbleGspeed.Y;
+                /* if (tribbleGrect.Bottom > _graphics.PreferredBackBufferHeight || tribbleGrect.Top < 0)
+                 {
+                     tribbleGspeed.Y *= -1;
+                     color = 1;
+                 }
+                 tribbleGrect.Y += (int)tribbleGspeed.Y;*/
+                tribble1.Move();
 
                 if (tribbleCrect.Right > _graphics.PreferredBackBufferWidth || tribbleCrect.Left < 0)
                 {
@@ -215,7 +220,7 @@ namespace monogame_3
                 {
                     GraphicsDevice.Clear(Color.Yellow);
                 }
-                _spriteBatch.Draw(tribbleGtexture, tribbleGrect, Color.White);
+                _spriteBatch.Draw(tribble1.Texture, tribble1.Bounds, Color.White); 
                 _spriteBatch.Draw(tribbleBtexture, tribbleBrect, Color.White);
                 _spriteBatch.Draw(tribbleCtexture, tribbleCrect, Color.White);
                 _spriteBatch.Draw(tribbleOtexture, tribbleOrect, Color.White);
