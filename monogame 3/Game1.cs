@@ -21,7 +21,7 @@ namespace monogame_3
         Song screenTunes;
         float seconds;
 
-        trobble tribble1;
+        trobble tribble1, tribble2, tribble3, tribble4;
 
         Rectangle window;
 
@@ -58,30 +58,29 @@ namespace monogame_3
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
-            x = generator.Next(2, 700);
-            y = generator.Next(2, 400);
-           /* tribbleGrect = new Rectangle(x, y, 100, 100);
-            tribbleGspeed = new Vector2(4, 3);
-            x = generator.Next(2, 700);
-            y = generator.Next(2, 400);*/
 
-            tribbleCrect = new Rectangle(x, y, 100, 100);
-            tribbleCspeed = new Vector2(3, 0);
-            x = generator.Next(2, 700);
-            y = generator.Next(2, 400);
 
-            tribbleBrect = new Rectangle(x, y, 100, 100);
-            tribbleBspeed = new Vector2(0, 4);
-            
-
-            tribbleOrect = new Rectangle(0, 0, 100, 100);
            
             bgColor = Color.CornflowerBlue;
+
+            x = generator.Next(1, 700);
+            y = generator.Next(1, 400);
 
             base.Initialize();
             MediaPlayer.Play(screenTunes);
             tribble1 = new trobble(tribbleGtexture, new Rectangle(10, 10, 100, 100), new Vector2(2, 2), window);
+            x = generator.Next(1, 700);
+            y = generator.Next(1, 400);
+            tribble2 = new trobble(tribbleCtexture, new Rectangle(x, y, 100, 100), new Vector2(2, 2), window); ;
+            x = generator.Next(1, 700);
+            y = generator.Next(1, 400);
+            tribble3 = new trobble(tribbleBtexture, new Rectangle(x, y, 100, 100), new Vector2(2, 2), window);
+            x = generator.Next(1, 700);
+            y = generator.Next(1, 400);
+            tribble4 = new trobble(tribbleOtexture, new Rectangle(x, y, 100, 100), new Vector2(2, 2), window); 
             
+
+
         }
 
         protected override void LoadContent()
@@ -91,9 +90,10 @@ namespace monogame_3
             screenTunes = Content.Load<Song>("Life could be a dream");
 
             tribbleGtexture = Content.Load<Texture2D>("tribbleGrey");
-            tribbleBtexture = Content.Load<Texture2D>("tribbleBrown");
-            tribbleCtexture = Content.Load<Texture2D>("tribbleCream");
-            tribbleOtexture = Content.Load<Texture2D>("tribbleOrange");
+             tribbleBtexture = Content.Load<Texture2D>("tribbleBrown");
+             tribbleCtexture = Content.Load<Texture2D>("tribbleCream");
+             tribbleOtexture = Content.Load<Texture2D>("tribbleOrange");
+            
 
             
 
@@ -106,7 +106,6 @@ namespace monogame_3
 
         protected override void Update(GameTime gameTime)
         {
-            //seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -115,7 +114,6 @@ namespace monogame_3
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
 
-            //timeSinceLastClick += gameTime.ElapsedGameTime.Milliseconds;
 
             
 
@@ -137,20 +135,11 @@ namespace monogame_3
             {
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                     screen = Screen.end;
-                   /* if (tribbleGrect.Right > _graphics.PreferredBackBufferWidth || tribbleGrect.Left < 0)
-                {
-                    color = 2;
-                    tribbleGspeed.X *= -1;
-                }
-                tribbleGrect.X += (int)tribbleGspeed.X;
-
-                 if (tribbleGrect.Bottom > _graphics.PreferredBackBufferHeight || tribbleGrect.Top < 0)
-                 {
-                     tribbleGspeed.Y *= -1;
-                     color = 1;
-                 }
-                 tribbleGrect.Y += (int)tribbleGspeed.Y;*/
                 tribble1.Move();
+                tribble2.Move();
+                tribble3.Move();
+                tribble4.Move();
+
                 if (tribble1.Right >= window.Width || tribble1.Bounds.X <= 0)
                 {
                     bgColor = Color.CornflowerBlue;
@@ -161,29 +150,28 @@ namespace monogame_3
                     bgColor = Color.Green;
                 }
 
-                
 
-
-                if (tribbleCrect.Right > _graphics.PreferredBackBufferWidth || tribbleCrect.Left < 0)
+                if (tribble2.Right >= window.Width || tribble2.Bounds.X <= 0)
                 {
-                    tribbleCspeed.X *= -1;
                     bgColor = Color.Red;
                 }
-                tribbleCrect.X += (int)tribbleCspeed.X;
-                tribbleCrect.Y += (int)tribbleCspeed.Y;
 
-                if (tribbleBrect.Top > (_graphics.PreferredBackBufferHeight - 100) || tribbleBrect.Bottom < 100)
+                if (tribble2.Right >= window.Height || tribble2.Bounds.Top <= 0)
                 {
-                    // tribbleBspeed.Y *= -1;
-                    tribbleBrect.Y = 0;
                     bgColor = Color.Yellow;
-
                 }
-                tribbleBrect.Y += (int)tribbleBspeed.Y;
-                tribbleBrect.X += (int)tribbleBspeed.X;
 
-                tribbleOrect.X = Mouse.GetState().X;
-                tribbleOrect.Y = Mouse.GetState().Y;
+                if (tribble3.Right >= window.Width || tribble3.Bounds.X <= 0)
+                {
+                    bgColor = Color.Purple;
+                }
+
+                if (tribble4.Right >= window.Width || tribble4.Bounds.X <= 0)
+                {
+                    bgColor = Color.Magenta;
+                }
+
+
 
                 if (clicks == 2)
                 {
@@ -224,10 +212,9 @@ namespace monogame_3
 
 
                 tribble1.Draw(_spriteBatch);
-
-                _spriteBatch.Draw(tribbleBtexture, tribbleBrect, Color.White);
-                _spriteBatch.Draw(tribbleCtexture, tribbleCrect, Color.White);
-                _spriteBatch.Draw(tribbleOtexture, tribbleOrect, Color.White);
+                tribble2.Draw(_spriteBatch);
+                tribble3.Draw(_spriteBatch);
+                tribble4.Draw(_spriteBatch);
             }
             else if (screen == Screen.end)
             {
